@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(Phong)
 
-add_executable(Phong vendor/glad/src/glad.c src/main.cpp src/Shader.cpp src/Shader.h src/helpers/FileHelper.h src/helpers/FileHelper.cpp src/Dragon.h src/Mesh.cpp src/Mesh.h src/Application.cpp src/Application.h src/Camera.cpp src/Camera.h)
+add_executable(Phong vendor/glad/src/glad.c src/main.cpp src/Shader.cpp src/Shader.h src/helpers/FileHelper.h src/helpers/FileHelper.cpp src/Dragon.h src/Mesh.cpp src/Mesh.h src/Application.cpp src/Application.h src/Camera.cpp src/Camera.h src/Classes/Obj.cpp src/Classes/Obj.h)
 
 target_include_directories(Phong PRIVATE
         "vendor/glad/include"
