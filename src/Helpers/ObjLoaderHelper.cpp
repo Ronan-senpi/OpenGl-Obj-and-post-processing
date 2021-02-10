@@ -181,7 +181,7 @@ void ObjLoaderHelper::PrintInfo(const tinyobj::attrib_t &attrib, const std::vect
 	}
 }
 
-bool ObjLoaderHelper::LoadObj(const std::string &filename, tinyobj::attrib_t &attrib,
+bool ObjLoaderHelper::LoadObj(const std::string &filename, const std::string &path, tinyobj::attrib_t &attrib,
                                          std::vector<tinyobj::shape_t> &shapes,
                                          std::vector<tinyobj::material_t> &materials, bool triangulate) {
 	std::cout << "Loading " << filename << std::endl;
@@ -190,7 +190,7 @@ bool ObjLoaderHelper::LoadObj(const std::string &filename, tinyobj::attrib_t &at
 	t.start();
 	std::string warn;
 	std::string err;
-	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), "", triangulate);
+	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), path.c_str(), triangulate);
 	t.end();
 	printf("Parsing time: %lu [msecs]\n", t.msec());
 

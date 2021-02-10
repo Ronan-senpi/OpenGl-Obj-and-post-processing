@@ -59,7 +59,7 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 }
 
 int main() {
-	Obj cube("resources/models/CubeComplex.obj");
+	Obj cube("resources/models","cubeTextured.obj");
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

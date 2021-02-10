@@ -117,8 +117,9 @@ namespace ObjLoaderHelper {
 	void PrintInfo(const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t> &shapes,
 	               const std::vector<tinyobj::material_t> &materials, bool showDetails = true);
 
-	bool LoadObj(const std::string &filename, tinyobj::attrib_t &attrib, std::vector<tinyobj::shape_t> &shapes,
-	                 std::vector<tinyobj::material_t> &materials, bool triangulate = true);
+	bool LoadObj(const std::string &filename, const std::string &path, tinyobj::attrib_t &attrib,
+	             std::vector<tinyobj::shape_t> &shapes, std::vector<tinyobj::material_t> &materials,
+	             bool triangulate = true);
 };
 
 

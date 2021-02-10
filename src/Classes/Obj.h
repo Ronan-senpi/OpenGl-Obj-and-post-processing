@@ -17,13 +17,18 @@ private:
 	std::vector<tinyobj::material_t> materials;
 	std::string path;
 public:
-	Obj(const std::string& path);
+	Obj(const std::string& filename, const std::string& path);
 
-	void loadObj(const std::string &path);
+	void loadObj(const std::string& filename, const std::string &path);
 
 	inline std::vector<float> getVetices(){
+
+		for (int i = 0; i < attrib.vertices.size(); i+3) {
+
+		}
 		return attrib.vertices;
 	}
+
 	inline std::vector<uint16_t> getIndices(){
 		std::vector<uint16_t> v;
 		for (auto & shape : shapes) {
