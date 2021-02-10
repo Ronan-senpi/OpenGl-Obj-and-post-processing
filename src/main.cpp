@@ -187,7 +187,7 @@ int main() {
         myShader.bind();
 
         //Displays Position
-        glm::vec3 pos(0.0f, -5.0f, 0.0f);
+        glm::vec3 pos(0.0f, 0.0f, 3.0f);
 
 
         glm::mat4 model = glm::translate(pos)// Position in word space
@@ -222,13 +222,13 @@ int main() {
         glUniform1f(9, 1.0f);
         //Use mesh
         dragon.bind();
-        //glDrawElements(GL_TRIANGLES, sizeof(DragonIndices) / sizeof(uint16_t), GL_UNSIGNED_SHORT, nullptr);
+        glDrawElements(GL_TRIANGLES, sizeof(DragonIndices) / sizeof(uint16_t), GL_UNSIGNED_SHORT, nullptr);
         dragon.unbind();
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.bind();
-        view = cam.LookAtFront(); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(cam.LookAtFront())); // remove translation from the view matrix
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "view"), 1, GL_FALSE, &view[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "projection"), 1, GL_FALSE, &projection[0][0]);
 
