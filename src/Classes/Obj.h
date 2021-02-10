@@ -7,18 +7,32 @@
 
 #include "glm/glm.hpp"
 #include <vector>
+#include <string>
+#include "tiny_obj_loader.h"
 
 class Obj {
 private:
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<glm::vec3> temp_vertices;
-	std::vector<glm::vec2> temp_uvs;
-	std::vector<glm::vec3> temp_normals;
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string path;
 public:
-	Obj(const char * path,
-	    std::vector < glm::vec3 > & out_vertices,
-	    std::vector < glm::vec2 > & out_uvs,
-	    std::vector < glm::vec3 > & out_normals);
+	Obj(const std::string& path);
+
+	void loadObj(const std::string &path);
+
+	inline std::vector<float> getVetices(){
+		return attrib.vertices;
+	}
+	inline std::vector<uint16_t> getIndices(){
+		std::vector<uint16_t> v;
+		for (auto & shape : shapes) {
+			for (auto & indice : shape.mesh.indices){
+				v.push_back(indice.vertex_index);
+			}
+		}
+		return v;
+	}
 
 };
 

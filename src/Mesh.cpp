@@ -35,7 +35,7 @@ void Mesh::setVertices(const float *vertices, size_t size) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(_vao);
-	glBindVertexBuffer(0, _vbo, 0, 8 * sizeof(GLfloat));
+	glBindVertexBuffer(0, _vbo, 0, 3 * sizeof(GLfloat));
 	glBindVertexArray(0);
 }
 

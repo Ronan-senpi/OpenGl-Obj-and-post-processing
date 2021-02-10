@@ -6,10 +6,14 @@
 #include "glm/gtx/euler_angles.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+
+#define TINYOBJLOADER_IMPLEMENTATION
+
 #include "Mesh.h"
 #include "Shader.h"
 #include "Dragon.h"
 #include "Camera.h"
+#include "Classes/Obj.h"
 
 float deltaTime = 0.0f;    // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -55,6 +59,7 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 }
 
 int main() {
+	Obj cube("resources/models/CubeComplex.obj");
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -88,10 +93,13 @@ int main() {
 	std::cout << "GPU: " << glGetString(GL_RENDERER) << "\n";
 
 	Shader myShader("myShader");
-	Mesh dragon;
-	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
-	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
+//	Mesh dragon;
+//	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
+//	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
 
+	Mesh dragon;
+	dragon.setVertices(&cube.getVetices().front(), cube.getVetices().size());
+	dragon.setIndices(&cube.getIndices().front(), cube.getIndices().size());
 	cam.init();
 
 	while (!glfwWindowShouldClose(window)) {

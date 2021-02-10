@@ -2,11 +2,20 @@
 // Created by Ronan on 08/02/2021.
 //
 
+#include <iostream>
 #include "Obj.h"
+#include "../Helpers/ObjLoaderHelper.h"
 
-Obj::Obj(const char *path,
-		 std::vector<glm::vec3> &out_vertices,
-		 std::vector<glm::vec2> &out_uvs,
-         std::vector<glm::vec3> &out_normals) {
 
+void Obj::loadObj(const std::string &path) {
+	if (ObjLoaderHelper::LoadObj(path, attrib, shapes, materials)) {
+		std::cout << path << " loaded !!! " << std::endl;
+	}
 }
+
+Obj::Obj(const std::string &path) {
+	loadObj(path);
+}
+
+
+

@@ -5,12 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(Phong)
 
-add_executable(Phong vendor/glad/src/glad.c src/main.cpp src/Shader.cpp src/Shader.h src/helpers/FileHelper.h src/helpers/FileHelper.cpp src/Dragon.h src/Mesh.cpp src/Mesh.h src/Application.cpp src/Application.h src/Camera.cpp src/Camera.h src/Classes/Obj.cpp src/Classes/Obj.h)
+add_executable(Phong vendor/glad/src/glad.c src/main.cpp src/Shader.cpp src/Shader.h src/helpers/FileHelper.h src/helpers/FileHelper.cpp src/Dragon.h src/Mesh.cpp src/Mesh.h src/Application.cpp src/Application.h src/Camera.cpp src/Camera.h src/Classes/Obj.cpp src/Classes/Obj.h src/Helpers/ObjLoaderHelper.cpp src/Helpers/ObjLoaderHelper.h)
 
 target_include_directories(Phong PRIVATE
         "vendor/glad/include"
 		"vendor/glfw-3.3.2/include"
-		"vendor/glm-0.9.9.8")
+		"vendor/glm-0.9.9.8"
+		"vendor/tol-1.0.6")
 
 target_link_directories(Phong PRIVATE
 		"vendor/glfw-3.3.2/lib")
