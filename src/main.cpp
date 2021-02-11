@@ -7,11 +7,13 @@
 #include "glm/gtc/type_ptr.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define TINYOBJLOADER_IMPLEMENTATION
 #include "Mesh.h"
 #include "Shader.h"
 #include "Dragon.h"
 #include "Camera.h"
 #include <vector>
+#include "Classes/Obj.h"
 
 float deltaTime = 0.0f;    // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -59,38 +61,38 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 }
 
 int main() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	Obj cube("resources/models/CubeComplex.obj");
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
-    GLFWwindow *window = glfwCreateWindow(800, 600, "cpp-base", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(800, 600, "cpp-base", nullptr, nullptr);
 
-    if (window == nullptr) {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
+	if (window == nullptr) {
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
 
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-    glViewport(0, 0, 800, 600); // Zone de rendu
+	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return -1;
+	}
+	glViewport(0, 0, 800, 600); // Zone de rendu
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); //Rezise
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); //Rezise
 
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glDebugMessageCallback(messageCallback, nullptr);
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEPTH_TEST);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glDebugMessageCallback(messageCallback, nullptr);
 
-    std::cout << "Driver: " << glGetString(GL_VERSION) << "\n";
-    std::cout << "GPU: " << glGetString(GL_RENDERER) << "\n";
-
+	std::cout << "Driver: " << glGetString(GL_VERSION) << "\n";
+	std::cout << "GPU: " << glGetString(GL_RENDERER) << "\n";
     std::vector<std::string> faces
             {
                     "resources/textures/skybox/right.jpg",
@@ -161,69 +163,72 @@ int main() {
     skyboxShader.bind();
     glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
 
-    Mesh dragon;
-    dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
-    dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
-
     unsigned int cubemapTexture = loadCubemap(faces);
 
-    cam.init();
+//	Mesh dragon;
+//	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
+//	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
 
-    while (!glfwWindowShouldClose(window)) {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        // Envents
-        glfwPollEvents();
+	Mesh dragon;
+	dragon.setVertices(&cube.getVetices().front(), cube.getVetices().size());
+	dragon.setIndices(&cube.getIndices().front(), cube.getIndices().size());
+	cam.init();
 
-        // Inputs
-        processInput(window, &cam);
-        glfwSetCursorPosCallback(window, mouse_callback);
+	while (!glfwWindowShouldClose(window)) {
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+		// Envents
+		glfwPollEvents();
 
-        //Rendering
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Inputs
+		processInput(window, &cam);
+		glfwSetCursorPosCallback(window, mouse_callback);
 
-        myShader.bind();
+		//Rendering
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //Displays Position
-        glm::vec3 pos(0.0f, 0.0f, 3.0f);
+		myShader.bind();
+
+		//Displays Position
+		glm::vec3 pos(0.0f, -5.0f, 0.0f);
 
 
-        glm::mat4 model = glm::translate(pos)// Position in word space
-                          * glm::eulerAngleXYZ(0.0f, 2.0f, 0.0f) // Model angle
-                          * glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)); //scale
+		glm::mat4 model = glm::translate(pos)// Position in word space
+		                  * glm::eulerAngleXYZ(0.0f, 2.0f, 0.0f) // Model angle
+		                  * glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)); //scale
 
-        //Update for move cam
-        glm::mat4 view = cam.LookAtFront();
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        GLfloat ratio = (float) viewport[2] / (float) viewport[3];
-        glm::mat4 projection = glm::perspective(glm::radians(60.0f), ratio, 0.01f, 100.0f);
+		//Update for move cam
+		glm::mat4 view = cam.LookAtFront();
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		GLfloat ratio = (float) viewport[2] / (float) viewport[3];
+		glm::mat4 projection = glm::perspective(glm::radians(60.0f), ratio, 0.01f, 100.0f);
 
-        glm::mat4 mvp = projection * view * model;
-        //Model pos
-        glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(model));
-        //CamPos
-        glUniform3fv(2, 1, glm::value_ptr(cam.getPos()));
-        //Object color
-        glUniform3fv(3, 1, glm::value_ptr(dragon.getColor()));
-        //lightColor
-        glUniform3fv(4, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
-        //Light pos
-        glUniform3fv(5, 1, glm::value_ptr(glm::vec3(10.0f, 5.0f, 10.0f)));
-        //view
-        glUniformMatrix4fv(6, 1, GL_FALSE, glm::value_ptr(view));
-        //projection
-        glUniformMatrix4fv(7, 1, GL_FALSE, glm::value_ptr(projection));
-        //ambientStrength
-        glUniform1f(8, 0.05f);
-        //specularStrength
-        glUniform1f(9, 1.0f);
-        //Use mesh
-        dragon.bind();
-        glDrawElements(GL_TRIANGLES, sizeof(DragonIndices) / sizeof(uint16_t), GL_UNSIGNED_SHORT, nullptr);
-        dragon.unbind();
+		glm::mat4 mvp = projection * view * model;
+		//Model pos
+		glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(model));
+		//CamPos
+		glUniform3fv(2, 1, glm::value_ptr(cam.getPos()));
+		//Object color
+		glUniform3fv(3, 1, glm::value_ptr(dragon.getColor()));
+		//lightColor
+		glUniform3fv(4, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+		//Light pos
+		glUniform3fv(5, 1, glm::value_ptr(glm::vec3(10.0f, 5.0f, 10.0f)));
+		//view
+		glUniformMatrix4fv(6, 1, GL_FALSE, glm::value_ptr(view));
+		//projection
+		glUniformMatrix4fv(7, 1, GL_FALSE, glm::value_ptr(projection));
+		//ambientStrength
+		glUniform1f(8, 0.05f);
+		//specularStrength
+		glUniform1f(9, 1.0f);
+		//Use mesh
+		dragon.bind();
+		glDrawElements(GL_TRIANGLES, sizeof(DragonIndices) / sizeof(uint16_t), GL_UNSIGNED_SHORT, nullptr);
+		dragon.unbind();
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
@@ -239,14 +244,14 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
-        //Draw mesh
+		//Draw mesh
 
-        glfwSwapBuffers(window);
-    }
-    glDeleteVertexArrays(1, &skyboxVAO);
+		glfwSwapBuffers(window);
+	}
+        glDeleteVertexArrays(1, &skyboxVAO);
     glDeleteBuffers(1, &skyboxVAO);
-    glfwTerminate();
-    return 0;
+	glfwTerminate();
+	return 0;
 }
 
 unsigned int loadCubemap(std::vector<std::string> faces) {
