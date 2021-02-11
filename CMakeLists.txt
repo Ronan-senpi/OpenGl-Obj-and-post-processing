@@ -11,6 +11,7 @@ target_include_directories(Phong PRIVATE
         "vendor/glad/include"
 		"vendor/glfw-3.3.2/include"
 		"vendor/glm-0.9.9.8"
+		"vendor/stb"
 		"vendor/tol-1.0.6")
 
 target_link_directories(Phong PRIVATE
