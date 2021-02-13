@@ -5,7 +5,7 @@
 #include "ObjLoaderHelper.h"
 
 void ObjLoaderHelper::PrintInfo(const tinyobj::attrib_t &attrib, const std::vector<tinyobj::shape_t> &shapes,
-                                       const std::vector<tinyobj::material_t> &materials, bool showDetails) {
+                                const std::vector<tinyobj::material_t> &materials, bool showDetails) {
 	std::cout << "# of vertices  : " << (attrib.vertices.size() / 3) << std::endl;
 	std::cout << "# of normals   : " << (attrib.normals.size() / 3) << std::endl;
 	std::cout << "# of texcoords : " << (attrib.texcoords.size() / 2)
@@ -14,7 +14,7 @@ void ObjLoaderHelper::PrintInfo(const tinyobj::attrib_t &attrib, const std::vect
 	std::cout << "# of shapes    : " << shapes.size() << std::endl;
 	std::cout << "# of materials : " << materials.size() << std::endl;
 
-	if(!showDetails){
+	if (!showDetails) {
 		return;
 	}
 	for (size_t v = 0; v < attrib.vertices.size() / 3; v++) {
@@ -181,16 +181,16 @@ void ObjLoaderHelper::PrintInfo(const tinyobj::attrib_t &attrib, const std::vect
 	}
 }
 
-bool ObjLoaderHelper::LoadObj(const std::string &filename, tinyobj::attrib_t &attrib,
-                                         std::vector<tinyobj::shape_t> &shapes,
-                                         std::vector<tinyobj::material_t> &materials, bool triangulate) {
+bool ObjLoaderHelper::LoadObj(const std::string &path, const std::string &filename, tinyobj::attrib_t &attrib,
+                              std::vector<tinyobj::shape_t> &shapes,
+                              std::vector<tinyobj::material_t> &materials, bool triangulate) {
 	std::cout << "Loading " << filename << std::endl;
 
 	timerutil t;
 	t.start();
 	std::string warn;
 	std::string err;
-	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), "", triangulate);
+	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), path.c_str(), triangulate);
 	t.end();
 	printf("Parsing time: %lu [msecs]\n", t.msec());
 

@@ -23,18 +23,15 @@ private:
 	void setVertices();
 
 public:
-	Obj(const std::string &path);
+	Obj(const std::string &path, const std::string &filename);
 
-	void loadObj(const std::string &path);
+	void loadObj(const std::string &path, const std::string &filename);
 
 	inline std::vector<float> getVertices() {
 		return vertices;
 	}
 
 	inline std::vector<uint16_t> getIndices() {
-		for (int i = 0; i < vertices.size()/8; ++i) {
-			indices.push_back(i);
-		}
 		return indices;
 	}
 
