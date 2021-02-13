@@ -17,7 +17,7 @@ Mesh::Mesh() {
 	glVertexAttribBinding(0, 0);// take data form buffer 0
 
 
-	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat)); //Set parameters 1 format
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat)); //Set parameters 1 format
 	glEnableVertexAttribArray(1); // Start
 	glVertexAttribBinding(1, 0);// take data form buffer 0
 
