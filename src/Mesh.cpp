@@ -17,7 +17,7 @@ Mesh::Mesh() {
 	glVertexAttribBinding(0, 0);// take data form buffer 0
 
 
-	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat)); //Set parameters 1 format
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat)); //Set parameters 1 format
 	glEnableVertexAttribArray(1); // Start
 	glVertexAttribBinding(1, 0);// take data form buffer 0
 
@@ -35,7 +35,7 @@ void Mesh::setVertices(const float *vertices, size_t size) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(_vao);
-	glBindVertexBuffer(0, _vbo, 0, 3 * sizeof(GLfloat));
+	glBindVertexBuffer(0, _vbo, 0, 8 * sizeof(GLfloat));
 	glBindVertexArray(0);
 }
 

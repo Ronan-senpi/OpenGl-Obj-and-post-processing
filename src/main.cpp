@@ -5,9 +5,13 @@
 #include "glm/gtx/transform.hpp"
 #include "glm/gtx/euler_angles.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "stb_image.h"
+
 #define TINYOBJLOADER_IMPLEMENTATION
+
 #include "Mesh.h"
 #include "Shader.h"
 #include "Dragon.h"
@@ -19,49 +23,50 @@ float deltaTime = 0.0f;    // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 Camera cam;
+
 unsigned int loadCubemap(std::vector<std::string> faces);
 
 
 void processInput(GLFWwindow *window, Camera *cam) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cam->moveForward(cam->getSpeed() * deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cam->moveBackward(deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cam->moveLeftward(deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cam->moveRightward(deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cam->moveForward(cam->getSpeed() * deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cam->moveBackward(deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cam->moveLeftward(deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cam->moveRightward(deltaTime);
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-    cam.mouse_callback(window, xpos, ypos);
+	cam.mouse_callback(window, xpos, ypos);
 }
 
 //Rezise
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 }
 
 void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message,
                      const void *userParam) {
-    switch (severity) {
-        case GL_DEBUG_SEVERITY_HIGH:
-            std::cout << "ERROR " << id << ": " << message << std::endl;
+	switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			std::cout << "ERROR " << id << ": " << message << std::endl;
 
-        case GL_DEBUG_SEVERITY_MEDIUM:
-            std::cout << "WARNING " << id << ": " << message << std::endl;
-            break;
-        case GL_DEBUG_SEVERITY_LOW:
-            std::cout << "INFO " << id << ": " << message << std::endl;
-            break;
-    }
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			std::cout << "WARNING " << id << ": " << message << std::endl;
+			break;
+		case GL_DEBUG_SEVERITY_LOW:
+			std::cout << "INFO " << id << ": " << message << std::endl;
+			break;
+	}
 }
 
 int main() {
-	Obj cube("resources/models/CubeComplex.obj");
+	Obj cube("resources/models/cube.obj");
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -93,85 +98,85 @@ int main() {
 
 	std::cout << "Driver: " << glGetString(GL_VERSION) << "\n";
 	std::cout << "GPU: " << glGetString(GL_RENDERER) << "\n";
-    std::vector<std::string> faces
-            {
-                    "resources/textures/skybox/right.jpg",
-                    "resources/textures/skybox/left.jpg",
-                    "resources/textures/skybox/top.jpg",
-                    "resources/textures/skybox/bottom.jpg",
-                    "resources/textures/skybox/front.jpg",
-                    "resources/textures/skybox/back.jpg"
-            };
+	std::vector<std::string> faces
+			{
+					"resources/textures/skybox/right.jpg",
+					"resources/textures/skybox/left.jpg",
+					"resources/textures/skybox/top.jpg",
+					"resources/textures/skybox/bottom.jpg",
+					"resources/textures/skybox/front.jpg",
+					"resources/textures/skybox/back.jpg"
+			};
 
-    float skyboxVertices[] = {
-            // positions
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
+	float skyboxVertices[] = {
+			// positions
+			-1.0f, 1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			1.0f, -1.0f, -1.0f,
+			1.0f, -1.0f, -1.0f,
+			1.0f, 1.0f, -1.0f,
+			-1.0f, 1.0f, -1.0f,
 
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
+			-1.0f, -1.0f, 1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, 1.0f, -1.0f,
+			-1.0f, 1.0f, -1.0f,
+			-1.0f, 1.0f, 1.0f,
+			-1.0f, -1.0f, 1.0f,
 
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
+			1.0f, -1.0f, -1.0f,
+			1.0f, -1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, -1.0f,
+			1.0f, -1.0f, -1.0f,
 
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
+			-1.0f, -1.0f, 1.0f,
+			-1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 1.0f,
+			-1.0f, -1.0f, 1.0f,
 
-            -1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, -1.0f,
+			-1.0f, 1.0f, -1.0f,
+			1.0f, 1.0f, -1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			-1.0f, 1.0f, 1.0f,
+			-1.0f, 1.0f, -1.0f,
 
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f
-    };
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, 1.0f,
+			1.0f, -1.0f, -1.0f,
+			1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, 1.0f,
+			1.0f, -1.0f, 1.0f
+	};
 
-    unsigned int skyboxVAO, skyboxVBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	unsigned int skyboxVAO, skyboxVBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
 
-    Shader skyboxShader("skybox");
-    Shader myShader("myShader");
+	Shader skyboxShader("skybox");
+	Shader myShader("myShader");
 
-    skyboxShader.bind();
-    glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
+	skyboxShader.bind();
+	glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
 
-    unsigned int cubemapTexture = loadCubemap(faces);
+	unsigned int cubemapTexture = loadCubemap(faces);
 
 //	Mesh dragon;
 //	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
 //	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
 
-	Mesh dragon;
-	dragon.setVertices(&cube.getVetices().front(), cube.getVetices().size());
-	dragon.setIndices(&cube.getIndices().front(), cube.getIndices().size());
+	Mesh mesh;
+	mesh.setVertices(&cube.getVertices().front(), cube.getVertices().size());
+	mesh.setIndices(&cube.getIndices().front(), cube.getIndices().size());
 	cam.init();
 
 	while (!glfwWindowShouldClose(window)) {
@@ -212,7 +217,7 @@ int main() {
 		//CamPos
 		glUniform3fv(2, 1, glm::value_ptr(cam.getPos()));
 		//Object color
-		glUniform3fv(3, 1, glm::value_ptr(dragon.getColor()));
+		glUniform3fv(3, 1, glm::value_ptr(mesh.getColor()));
 		//lightColor
 		glUniform3fv(4, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
 		//Light pos
@@ -226,56 +231,57 @@ int main() {
 		//specularStrength
 		glUniform1f(9, 1.0f);
 		//Use mesh
-		dragon.bind();
-		glDrawElements(GL_TRIANGLES, sizeof(DragonIndices) / sizeof(uint16_t), GL_UNSIGNED_SHORT, nullptr);
-		dragon.unbind();
+		mesh.bind();
+		glDrawElements(GL_TRIANGLES, cube.getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
+		mesh.unbind();
 
-        // draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-        skyboxShader.bind();
-        view = glm::mat4(glm::mat3(cam.LookAtFront())); // remove translation from the view matrix
-        glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "view"), 1, GL_FALSE, &view[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "projection"), 1, GL_FALSE, &projection[0][0]);
+		// draw skybox as last
+		glDepthFunc(
+				GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+		skyboxShader.bind();
+		view = glm::mat4(glm::mat3(cam.LookAtFront())); // remove translation from the view matrix
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "view"), 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getId(), "projection"), 1, GL_FALSE, &projection[0][0]);
 
-        // skybox cube
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
+		// skybox cube
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // set depth function back to default
 		//Draw mesh
 
 		glfwSwapBuffers(window);
 	}
-        glDeleteVertexArrays(1, &skyboxVAO);
-    glDeleteBuffers(1, &skyboxVAO);
+	glDeleteVertexArrays(1, &skyboxVAO);
+	glDeleteBuffers(1, &skyboxVAO);
 	glfwTerminate();
 	return 0;
 }
 
 unsigned int loadCubemap(std::vector<std::string> faces) {
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++) {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                         data);
-            stbi_image_free(data);
-        } else {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++) {
+		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data) {
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+			             data);
+			stbi_image_free(data);
+		} else {
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    return textureID;
+	return textureID;
 }
