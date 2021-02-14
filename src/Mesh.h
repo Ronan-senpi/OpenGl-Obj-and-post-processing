@@ -22,6 +22,10 @@ public:
 		return  _objectColor;
 	}
 
+	inline GLuint getVAO(){
+	    return _vao;
+	}
+
 private:
 	GLuint _vao; // Vertex array objet (setup attrib shader)
 	GLuint _vbo; // Vertices array object Buffer

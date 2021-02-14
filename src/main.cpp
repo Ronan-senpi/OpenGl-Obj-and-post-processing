@@ -233,7 +233,7 @@ int main() {
 
 	Shader skyboxShader("skybox");
 	Shader myShader("myShader");
-
+    Shader invertShader("framebuffer_inversion");
 //	Mesh dragon;
 //	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
 //	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
@@ -246,7 +246,8 @@ int main() {
 	glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
 	skyboxShader.bind();
 	glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
-
+    invertShader.bind();
+    glUniform1i(glGetUniformLocation(invertShader.getId(), "screenTexture"), 0);
 	cam.init();
 
 	// Configuration du framebuffer
@@ -302,7 +303,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		myShader.bind();
-
+        glUniform1i(10, 1);
 		//Displays Position
 		glm::vec3 pos(0.0f, -5.0f, 0.0f);
 
@@ -363,6 +364,11 @@ int main() {
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
 		//Draw mesh
+
+        invertShader.bind();
+        glBindVertexArray(mesh.getVAO());
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glfwSwapBuffers(window);
 	}
