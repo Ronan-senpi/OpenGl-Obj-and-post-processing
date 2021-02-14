@@ -69,37 +69,37 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 	}
 }
 
-unsigned int loadTexture(const char *path) {
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
+unsigned int loadTexture(const std::string &path) {
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
 
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data) {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
+	if (data) {
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        stbi_image_free(data);
-    } else {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
+		stbi_image_free(data);
+	} else {
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
 
-    return textureID;
+	return textureID;
 }
 
 unsigned int loadCubemap(std::vector<std::string> faces) {
@@ -129,7 +129,7 @@ unsigned int loadCubemap(std::vector<std::string> faces) {
 }
 
 int main() {
-	Obj cube("resources/models", "resources/models/cube.obj");
+	Obj cube("resources/models", "resources/models/barrel.obj");
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -225,8 +225,11 @@ int main() {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
 
-    unsigned int objTexture = loadTexture(("resources/models/" + cube.getTextureName()).c_str());
-    unsigned int cubemapTexture = loadCubemap(faces);
+	std::vector<unsigned int> objTextureIds;
+	for (auto &texName : cube.getTexturesName()) {
+		objTextureIds.push_back(loadTexture(texName));
+	}
+	unsigned int cubemapTexture = loadCubemap(faces);
 
 	Shader skyboxShader("skybox");
 	Shader myShader("myShader");
@@ -239,36 +242,39 @@ int main() {
 	mesh.setVertices(&cube.getVertices().front(), cube.getVertices().size());
 	mesh.setIndices(&cube.getIndices().front(), cube.getIndices().size());
 
-    myShader.bind();
-    glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
-    skyboxShader.bind();
-    glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
+	myShader.bind();
+	glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
+	skyboxShader.bind();
+	glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
 
 	cam.init();
 
-    // Configuration du framebuffer
-    unsigned int fbo;
-    glGenFramebuffers(1, &fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    // On crée le color attachment texture
-    unsigned int textureColorbuffer;
-    glGenTextures(1, &textureColorbuffer);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-    // Maintenant on crée le renderbuffer object pour le depth et le stencil attachment
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-    // Enfin on vérifie si le framebuffer est complet
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete! : " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+	// Configuration du framebuffer
+	unsigned int fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	// On crée le color attachment texture
+	unsigned int textureColorbuffer;
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	// Maintenant on crée le renderbuffer object pour le depth et le stencil attachment
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH,
+	                      SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+	                          rbo); // now actually attach it
+	// Enfin on vérifie si le framebuffer est complet
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete! : " << glCheckFramebufferStatus(GL_FRAMEBUFFER)
+		          << std::endl;
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
@@ -281,15 +287,15 @@ int main() {
 		processInput(window, &cam);
 		glfwSetCursorPosCallback(window, mouse_callback);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo); // switch framebuffer
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo); // switch framebuffer
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-        //Mettre en place le shader dans le framebuffer
+		//Mettre en place le shader dans le framebuffer
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Rendering
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -333,8 +339,11 @@ int main() {
 		glUniform1f(9, 1.0f);
 		//Use mesh
 		mesh.bind();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, objTexture);
+		glActiveTexture(GL_TEXTURE0);
+
+		for (auto id : objTextureIds) {
+			glBindTexture(GL_TEXTURE_2D, id);
+		}
 		glDrawElements(GL_TRIANGLES, cube.getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
 		mesh.unbind();
 
@@ -357,7 +366,7 @@ int main() {
 
 		glfwSwapBuffers(window);
 	}
-    glDeleteVertexArrays(1, &skyboxVAO);
+	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVAO);
 	glfwTerminate();
 	return 0;

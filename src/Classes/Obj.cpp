@@ -52,15 +52,8 @@ void Obj::setVertices() {
 				vertices.push_back(nz);
 				vertices.push_back(tx);
 				vertices.push_back(ty);
-//				if (!indices.empty()) {
-//					int lastest = indices.back();
-//					indices.push_back((lastest + 1));
-//				} else {
-//					indices.push_back(0);
-//				}
 			}
 			index_offset += fv;
-//			indices.push_back(index_offset);
 			// per-face material
 			shapes[s].mesh.material_ids[f];
 		}

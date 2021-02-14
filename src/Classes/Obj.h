@@ -35,8 +35,13 @@ public:
 	inline std::vector<uint16_t> getIndices() {
 		return indices;
 	}
-	inline std::string getTextureName(){
-		return  materials[0].diffuse_texname;
+
+	inline std::vector<std::string> getTexturesName() {
+		std::vector<std::string> s;
+		for (auto &material : materials) {
+			s.push_back(material.diffuse_texname);
+		}
+		return s;
 	}
 };
 
