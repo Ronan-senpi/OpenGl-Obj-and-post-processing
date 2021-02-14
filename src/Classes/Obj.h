@@ -19,13 +19,16 @@ private:
 	std::string path;
 	std::vector<uint16_t> indices;
 	std::vector<float> vertices;
+    unsigned int textureIndex;
 
 	void setVertices();
+   // unsigned int loadTexture(char const * path);
 
 public:
 	Obj(const std::string &path, const std::string &filename);
 
 	void loadObj(const std::string &path, const std::string &filename);
+
 
 	inline std::vector<float> getVertices() {
 		return vertices;

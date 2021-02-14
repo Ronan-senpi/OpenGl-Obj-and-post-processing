@@ -69,6 +69,38 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 	}
 }
 
+unsigned int loadTexture(const char *path) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data) {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    } else {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
+}
 
 unsigned int loadCubemap(std::vector<std::string> faces) {
 	unsigned int textureID;
@@ -193,13 +225,18 @@ int main() {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
 
+    unsigned int objTexture = loadTexture("resources/models/wildtextures_big-stone-wall-4k-480x480.jpg");
+    unsigned int cubemapTexture = loadCubemap(faces);
+
 	Shader skyboxShader("skybox");
 	Shader myShader("myShader");
 
+	myShader.bind();
+    glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
 	skyboxShader.bind();
 	glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
 
-	unsigned int cubemapTexture = loadCubemap(faces);
+
 
 //	Mesh dragon;
 //	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
@@ -208,6 +245,7 @@ int main() {
 	Mesh mesh;
 	mesh.setVertices(&cube.getVertices().front(), cube.getVertices().size());
 	mesh.setIndices(&cube.getIndices().front(), cube.getIndices().size());
+
 	cam.init();
 
     // Configuration du framebuffer
@@ -297,7 +335,8 @@ int main() {
 		glUniform1f(9, 1.0f);
 		//Use mesh
 		mesh.bind();
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, objTexture);
 		glDrawElements(GL_TRIANGLES, cube.getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
 		mesh.unbind();
 
@@ -320,7 +359,7 @@ int main() {
 
 		glfwSwapBuffers(window);
 	}
-	glDeleteVertexArrays(1, &skyboxVAO);
+    glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVAO);
 	glfwTerminate();
 	return 0;

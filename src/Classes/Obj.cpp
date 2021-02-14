@@ -3,9 +3,11 @@
 //
 
 #include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "Obj.h"
 #include "../Helpers/ObjLoaderHelper.h"
-
+#include "stb_image.h"
 
 void Obj::loadObj(const std::string &path, const std::string &filename) {
 	if (ObjLoaderHelper::LoadObj(path, filename, attrib, shapes, materials)) {
@@ -66,6 +68,9 @@ void Obj::setVertices() {
 	for (int i = 0; i < vertices.size()/8; ++i) {
 		indices.push_back(i);
 	}
+
+    //textureIndex = loadTexture(("resources/models/" + materials[0].diffuse_texname).c_str());
+
 }
 
 

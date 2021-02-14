@@ -1,6 +1,7 @@
 #version 430 core
 in vec3 fragPos;
 in vec3 normals;
+in vec2 TexCoords;
 
 layout(location = 2) uniform vec3 camPos;//camera Position
 layout(location = 3) uniform vec3 objectColor;
@@ -8,6 +9,9 @@ layout(location = 4) uniform vec3 lightColor;
 layout(location = 5) uniform vec3 lightPos;
 layout(location = 8) uniform float ambientStrength;
 layout(location = 9) uniform float specularStrength;
+
+uniform sampler2D texture1;
+
 out vec4 fragColor;
 void main()
 {
@@ -26,6 +30,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;
    // specular = vec3(0);
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    fragColor = vec4(result, 1.0);
+    vec3 result = (ambient + diffuse + specular);
+    fragColor = texture(texture1, TexCoords);
 }
