@@ -26,7 +26,6 @@ void Obj::setVertices() {
 		size_t index_offset = 0;
 		for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
 			int fv = shapes[s].mesh.num_face_vertices[f];
-
 			// Loop over vertices in the face.
 			for (size_t v = 0; v < fv; v++) {
 				// access to vertex
@@ -61,7 +60,7 @@ void Obj::setVertices() {
 			index_offset += fv;
 //			indices.push_back(index_offset);
 			// per-face material
-			//shapes[s].mesh.material_ids[f];
+			shapes[s].mesh.material_ids[f];
 		}
 	}
 	for (int i = 0; i < vertices.size()/8; ++i) {

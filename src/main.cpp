@@ -66,7 +66,7 @@ void messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLs
 }
 
 int main() {
-	Obj cube("resources/models/CubeComplex.mtl", "resources/models/CubeComplex.obj");
+	Obj cube("resources/models", "resources/models/cube.obj");
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -232,6 +232,7 @@ int main() {
 		glUniform1f(9, 1.0f);
 		//Use mesh
 		mesh.bind();
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		glDrawElements(GL_TRIANGLES, cube.getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
 		mesh.unbind();
 
