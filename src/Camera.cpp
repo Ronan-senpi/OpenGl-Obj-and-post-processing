@@ -16,7 +16,7 @@ glm::mat4 Camera::LookAtFront() {
 void Camera::init() {
 	//_camCenter = glm::vec3(0.0f, 0.0f, 0.0f);
 	_camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	_camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	_camPos = glm::vec3(-1.0f, -3.0f, 3.0f);
 	_camFront = glm::vec3(0.0f,0.0f,-1.0f);
 	_camSpeed = 3.5f;
 }

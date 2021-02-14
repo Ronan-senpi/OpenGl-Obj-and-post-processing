@@ -21,7 +21,12 @@ Mesh::Mesh() {
 	glEnableVertexAttribArray(1); // Start
 	glVertexAttribBinding(1, 0);// take data form buffer 0
 
-	glBindVertexArray(0); //Unbind VAO
+    glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat));//on défini le format du parametre en _position 2
+    glEnableVertexAttribArray(2);// on l'active
+    glVertexAttribBinding(2, 0);// on va bind les données du vbo sur le buffer 0 à l'indice 2
+
+
+    glBindVertexArray(0); //Unbind VAO
 
 
 }

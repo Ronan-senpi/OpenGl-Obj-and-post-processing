@@ -22,7 +22,7 @@ void main()
     vec3 norm = normalize(normals);
     vec3 lightDir = normalize(lightPos - fragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+    vec3 diffuse = diff * lightColor * vec3(texture(texture1, TexCoords));
     //diffuse = vec3(0);
     // speculaaaaaaaaaaaaar
     vec3 viewDir = normalize(camPos - fragPos);
@@ -31,5 +31,5 @@ void main()
     vec3 specular = specularStrength * spec * lightColor;
    // specular = vec3(0);
     vec3 result = (ambient + diffuse + specular);
-    fragColor = texture(texture1, TexCoords);
+    fragColor = vec4(result, 1.0);
 }

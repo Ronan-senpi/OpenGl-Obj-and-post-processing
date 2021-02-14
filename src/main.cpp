@@ -231,13 +231,6 @@ int main() {
 	Shader skyboxShader("skybox");
 	Shader myShader("myShader");
 
-	myShader.bind();
-    glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
-	skyboxShader.bind();
-	glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
-
-
-
 //	Mesh dragon;
 //	dragon.setVertices(DragonVertices, sizeof(DragonVertices) / sizeof(float));
 //	dragon.setIndices(DragonIndices, sizeof(DragonIndices) / sizeof(uint16_t));
@@ -245,6 +238,11 @@ int main() {
 	Mesh mesh;
 	mesh.setVertices(&cube.getVertices().front(), cube.getVertices().size());
 	mesh.setIndices(&cube.getIndices().front(), cube.getIndices().size());
+
+    myShader.bind();
+    glUniform1i(glGetUniformLocation(myShader.getId(), "texture1"), 0);
+    skyboxShader.bind();
+    glUniform1i(glGetUniformLocation(skyboxShader.getId(), "skybox"), 0);
 
 	cam.init();
 
