@@ -339,10 +339,10 @@ int main() {
 		glUniform1f(9, 1.0f);
 		//Use mesh
 		mesh.bind();
-		glActiveTexture(GL_TEXTURE0);
 
-		for (auto id : objTextureIds) {
-			glBindTexture(GL_TEXTURE_2D, id);
+		for (int i = 0; i < objTextureIds.size(); ++i) {
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, objTextureIds[i]);
 		}
 		glDrawElements(GL_TRIANGLES, cube.getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
 		mesh.unbind();
